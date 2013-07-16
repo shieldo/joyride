@@ -1,0 +1,348 @@
+/* JOYRIDE */
+
+@charset "utf-8";
+
+@font-face {
+    font-family: 'qwigleyregular';
+    src: url('qwigley-regular-webfont.eot');
+    src: url('qwigley-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('qwigley-regular-webfont.woff') format('woff'),
+         url('qwigley-regular-webfont.ttf') format('truetype'),
+         url('qwigley-regular-webfont.svg#qwigleyregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+@font-face {
+    font-family: 'amaticbold';
+    src: url('amatic-bold-webfont.eot');
+    src: url('amatic-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('amatic-bold-webfont.woff') format('woff'),
+         url('amatic-bold-webfont.ttf') format('truetype'),
+         url('amatic-bold-webfont.svg#amaticbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+@font-face {
+    font-family: 'amatic_scregular';
+    src: url('amaticsc-regular-webfont.eot');
+    src: url('amaticsc-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('amaticsc-regular-webfont.woff') format('woff'),
+         url('amaticsc-regular-webfont.ttf') format('truetype'),
+         url('amaticsc-regular-webfont.svg#amatic_scregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+html
+{
+    font-family:  'amaticbold' , Arial, Helvetica, sans-serif;
+    font-size:18px;
+}
+
+body
+{
+    background-color: #326696;
+    margin: 0px;
+    overflow: hidden;
+    /*font-family:Monospace;*/
+    font-size:13px;
+    text-align:center;
+    font-weight: bold;
+    text-align:center;
+}
+
+img
+{
+}
+
+h1
+{
+    font-size:3em;
+    text-align:center;
+    margin: 20px auto;
+}
+
+h2
+{
+    font-size:2em;
+    text-align:center;
+    margin: 0 auto;
+    padding:5px 0;
+}
+a
+{
+    color:#0078ff;
+    text-decoration:none;
+}
+a:hover
+{
+    background-color: rgba(235,43,0,0.8);
+}
+.container
+{
+    width:100%;
+    min-width:1024px;
+    position:relative;
+}
+article
+{
+
+    position: absolute;
+}
+
+
+.video
+{
+    
+}
+
+.photo
+{
+}
+
+.control
+{
+}
+.panel
+{
+    background-color: rgba(89,21,158,0.6);
+    width:1024px;
+    
+    padding: 5px 0 30px 0;
+}
+.back a
+{
+    height:100%;
+    width:100%;
+    display:block;
+}
+.back
+{
+    position: absolute;
+    background-color: rgba(235,43,0,0.6);
+    width: 200px;
+    height: 270px;
+}
+.back.left
+{
+    background: url(img/left.png),rgba(235,43,0,0.6);
+    float: left;
+    background-size: 96%;
+    background-repeat: no-repeat;
+    background-position:center bottom;
+    top: 190px;
+    left: -260px;
+}
+
+.back.right
+{
+    background: url(img/right.png),rgba(235,43,0,0.6);
+    float: left;
+    background-size: 96%;
+    background-repeat: no-repeat;
+    background-position:center bottom;
+    top: 240px;
+    right: -260px;
+}
+.title
+{
+    width: 960px;
+    background:  none;
+    padding:0;
+  position: absolute; margin-left: auto; margin-right: auto; width: 100%; top: 20px;
+}
+.path.panel,
+.fork.panel
+{
+    background:none;
+    /*position:relative;*/
+      width:100%;
+    /*height:600px;*/
+    text-align:center;
+    top: -700px;
+}
+
+.fork.panel:after
+{
+    clear: both;
+    content: ' ';
+}
+
+.fork.panel a
+{
+    height:100%;
+    width:100%;
+    display:block;
+}
+
+.fork .straight,
+.fork .left,
+.fork .right
+{
+    width: 328px;
+    height: 442px;
+    display: inline-block;
+    float:left;
+    background-repeat: no-repeat;
+}
+
+.fork .left,
+.fork .right
+{
+    position:absolute;
+}
+.fork .straight
+{
+    background: url(img/straight.png),rgba(89,21,158,0.6);
+    background-size: 96%;
+    background-position:center bottom;
+    margin-left: 350px;
+}
+
+.fork .left
+{
+    background: url(img/left.png),rgba(89,21,158,0.6);
+    background-size: 96%;
+    background-position:center bottom;
+    left:0;
+}
+
+.fork .right
+{
+    background: url(img/right.png),rgba(89,21,158,0.6);
+    background-size: 96%;
+    background-position:center bottom;
+    right: 0;
+}
+.path.panel .photo
+{
+    position:absolute;
+}
+.path.panel .photo img
+{
+    width:60%;
+}
+.path.panel .photo.left
+{
+    left:700px;
+    text-align:left;
+}
+.path.panel .photo.right
+{
+    right:700px;
+    text-align:right;
+}
+.cta
+{
+    border-radius: 20px;
+    background-color: rgba(235,43,0,0.8);
+    padding: 15px 40px 25px;
+    display:inline-block;
+}
+
+
+.hud
+{
+    position:fixed;
+    bottom:0;
+}
+.hud .map
+{
+    background: url(img/map.png), rgba(89,21,158,0.6);
+    width:250px;
+    height:300px;
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+}
+
+
+
+.throb {
+    -webkit-animation-duration: 3s;
+    -webkit-animation-iteration-count: 30000;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-fill-mode: both;
+    -moz-animation-duration: 3s;
+    -moz-animation-iteration-count: 30000;
+    -moz-animation-timing-function: linear;
+    -moz-animation-fill-mode: both;
+    -o-animation-duration: 3s;
+    -o-animation-iteration-count: 30000;
+    -o-animation-timing-function: linear;
+    -o-animation-fill-mode: both;
+    animation-duration: 3s;
+    animation-iteration-count: 30000;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+} 
+    /* ////////////////////////////////////////////////////// */
+    /* Setup .throb Keyframes */
+    /* ////////////////////////////////////////////////////// */
+    @-webkit-keyframes throb {
+        0% {
+            opacity: 0;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+        }
+    }
+    @-moz-keyframes throb {
+        0% {
+            opacity: 0;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+        }
+    }
+    @-o-keyframes throb {
+        0% {
+            opacity: 0;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+        }
+    }
+    @keyframes throb {
+        0% {
+            opacity: 0;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+        }
+    }
+/* ////////////////////////////////////////////////////// */
+/* Add Animation to Selector */
+/* ////////////////////////////////////////////////////// */
+.throb {
+    -webkit-animation-name: throb;
+    -moz-animation-name: throb;
+    -o-animation-name: throb;
+    animation-name: throb;
+}
+
+/* hide inputs */
+#inputs {
+    visibility: hidden;
+}
+
+

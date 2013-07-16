@@ -1,0 +1,370 @@
+<head>
+    <title>Team Menace presents... BIIIIIIIKE</title>
+    <link type="text/css" rel="stylesheet" href="reset.css">
+    <script type="text/javascript" src="js/three.min.js"></script>
+    <script type="text/javascript" src="js/Detector.js"></script>
+
+    <script id="vs" type="x-shader/x-vertex">
+
+        varying vec2 vUv;
+
+        void main() {
+
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+        }
+
+    </script>
+
+    <script id="fs" type="x-shader/x-fragment">
+
+        uniform sampler2D map;
+
+        uniform vec3 fogColor;
+        uniform float fogNear;
+        uniform float fogFar;
+
+        varying vec2 vUv;
+
+        void main() {
+
+            float depth = gl_FragCoord.z / gl_FragCoord.w;
+            float fogFactor = smoothstep( fogNear, fogFar, depth );
+
+            gl_FragColor = texture2D( map, vUv );
+            gl_FragColor.w *= pow( gl_FragCoord.z, 20.0 );
+            gl_FragColor = mix( gl_FragColor, vec4( fogColor, gl_FragColor.w ), fogFactor );
+
+        }
+
+    </script>
+
+    <script type="text/javascript">
+
+    var container;
+    var camera, scene, renderer;
+    var mesh, geometry, material;
+
+    var mouseX = 0, mouseY = 0;
+    var start_time = Date.now();
+
+    var windowHalfX = window.innerWidth / 2;
+    var windowHalfY = window.innerHeight / 2;
+
+    var items = [];
+    var dt;
+    var dirx = "left";
+
+    $.getJSON('awtb_assets.json', function (data) {
+
+       dt = data;
+
+       $.each(data, function (key, val) {
+
+
+           var x = {};
+           x.k = key;
+
+
+           //$("#content").append("<div style='display:none' id='" + key + "'>" + val.title + "</div>");
+
+           if (dirx == 'left') {
+               dirx = 'right';
+           } else {
+               dirx = 'left';
+           }
+
+           x.s = val.starti;
+           x.e = val.stopi;
+
+
+           $("#content").append("<article  class='path panel'><div id='p" + key + "' class='photo " + dirx + "'><img src='" + val.title + "'></div></article>");
+
+
+           items.push(x);
+
+
+       });
+
+    });
+
+
+    function moving(pos) {
+
+       $.each(items, function (key, val) {
+
+           if (pos <= val.s && pos >= val.e) {
+
+               var element = "#p" + val.k;
+
+               if ($(element).is(":visible")) {
+
+
+                   var w = $(element).width();
+                   var h = $(element).height();
+
+                   var t = val.s - val.e;
+
+                   if (t < 1) {
+                       t = t * -1;
+                   }
+
+                   var tpos = pos;
+
+                   if (tpos < 0) {
+                       tpos = tpos * -1;
+                   }
+
+
+
+                   w = 328 * ((val.s - tpos) / t);
+                   h = 442 * ((val.s - tpos) / t);
+
+
+                   if (pos > val.e) {
+                       $(element).width(w);
+                       $(element).height(h);
+                   }
+
+
+
+               }
+               else {
+
+                   var w = $(element).width();
+                   var h = $(element).height();
+
+                   var t = val.s - val.e;
+
+                   if (t < 1) {
+                       t = t * -1;
+                   }
+
+                   $(element).width((w / t) + 1);
+                   $(element).height((h / t) + 1);
+                   console.log(element);
+
+                   $(element).show();
+
+
+               }
+
+
+
+
+           }
+
+           else {
+
+               $("#p" + val.k).hide();
+           }
+
+       });
+    }
+
+    (function ($) {
+        $(function () {
+
+        if (!Detector.webgl) Detector.addGetWebGLMessage();
+
+        init();
+
+        function init() {
+
+            container = document.createElement('div');
+            document.body.appendChild(container);
+
+            // Bg gradient
+
+            var canvas = document.createElement('canvas');
+            canvas.setAttribute("id", "clouds");
+            canvas.width = 32;
+            canvas.height = window.innerHeight;
+
+            var context = canvas.getContext('2d');
+
+            var gradient = context.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, "#1e4877");
+            gradient.addColorStop(0.5, "#4584b4");
+
+            context.fillStyle = gradient;
+            context.fillRect(0, 0, canvas.width, canvas.height);
+
+            container.style.background = 'url(' + canvas.toDataURL('image/png') + ')';
+            container.style.backgroundSize = '32px 100%';
+
+            //
+
+            camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 3000);
+            camera.position.z = 8000;
+
+            scene = new THREE.Scene();
+
+            geometry = new THREE.Geometry();
+
+            var texture = THREE.ImageUtils.loadTexture('cloud10.png', null, animate);
+            texture.magFilter = THREE.LinearMipMapLinearFilter;
+            texture.minFilter = THREE.LinearMipMapLinearFilter;
+
+            var fog = new THREE.Fog(0x4584b4, -100, 3000);
+
+            material = new THREE.ShaderMaterial({
+
+                uniforms: {
+
+                    "map": { type: "t", value: texture },
+                    "fogColor": { type: "c", value: fog.color },
+                    "fogNear": { type: "f", value: fog.near },
+                    "fogFar": { type: "f", value: fog.far },
+
+                },
+                vertexShader: document.getElementById('vs').textContent,
+                fragmentShader: document.getElementById('fs').textContent,
+                depthWrite: false,
+                depthTest: false,
+                transparent: true
+
+            });
+
+            var plane = new THREE.Mesh(new THREE.PlaneGeometry(64, 64));
+
+            for (var i = 0; i < 8000; i++) {
+
+                plane.position.x = Math.random() * 1000 - 500;
+                plane.position.y = -Math.random() * Math.random() * 200 - 15;
+                plane.position.z = i;
+                plane.rotation.z = Math.random() * Math.PI;
+                plane.scale.x = plane.scale.y = Math.random() * Math.random() * 1.5 + 0.5;
+
+                THREE.GeometryUtils.merge(geometry, plane);
+
+            }
+
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            mesh = new THREE.Mesh(geometry, material);
+            mesh.position.z = -8000;
+            scene.add(mesh);
+
+
+            renderer = new THREE.WebGLRenderer({ antialias: false });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            document.addEventListener('mousemove', onDocumentMouseMove, false);
+            // window.addEventListener('resize', onWindowResize, false);
+
+            var steeringInterval;
+            $(document).on('changePosition', function () {
+                var isMoving = $('input.position', '#inputs').val() == '1';
+                console.log('changed position: ' + isMoving);
+                if (isMoving) {
+                    makego();
+                } else {
+                    makestop();
+                }
+            });
+            $(document).on('changeSteering', function () {
+                var direction = parseInt($('input.steering', '#inputs').val());
+                console.log('changed steering: ' + direction);
+                if (typeof steeringInterval !== 'undefined') {
+                    window.clearInterval(steeringInterval)
+                }
+                steeringInterval = window.setInterval(function () {
+                    if (direction === -1) {
+                        moveleft();
+                    } else if (direction === 1) {
+                        moveright();
+                    }
+                }, 250);
+            })
+
+        }
+
+        });
+    })(jQuery);
+
+    var go = "";
+
+    function onDocumentMouseMove(event) {
+
+        mouseX = (event.clientX - windowHalfX) * 0.25;
+        mouseY = (event.clientY - windowHalfY) * 0.15;
+
+        window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+    }
+
+    function animate() {
+
+        requestAnimationFrame(animate);
+
+        position = ((Date.now() - start_time) * 0.03) % 8000;
+
+        camera.position.x += (mouseX - camera.position.x) * 0.01;
+        // camera.position.y += (-mouseY - camera.position.y) * 0.01;
+        if (go == "yes") {
+            camera.position.z -= 2;
+        }
+
+        renderer.render(scene, camera);
+        moving(camera.position.z);
+
+    }
+
+    function makego() {
+        go = "yes";
+        $('.title').hide();
+    }
+
+    function makestop() {
+
+        go = "";
+    }
+
+    function moveleft() {
+
+        if (mouseX >= 0) {
+            mouseX -= 100;
+        }
+    }
+
+    function moveright() {
+
+        if (mouseX <= 500) {
+            mouseX += 100;
+        }
+    }
+
+    </script>
+</head>
+
+<body>
+<article class="panel title">
+    <img src="img/logo.png"><br>
+    <h1 class="cta throb">PEDAL TO BEGIN</h1>
+</article>
+
+<div id="content" style="
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 999;
+"></div>
+<form id="inputs">
+  {{> position}}
+  {{> steering}}
+</form>
+</body>
+
+<template name="position">
+    <label>Position</label> <input type="text" name="position" class="position" value="{{position}}">
+</template>
+<template name="steering">
+    <label>Steering</label> <input type="text" name="steering" class="steering" value="{{steering}}">
+</template>

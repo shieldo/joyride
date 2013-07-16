@@ -1,0 +1,1 @@
+This simple Arduino script does a set of reads four times a second, although a steering reading is only taken every three-quarters of a second. It sends data out to the serial port using a simple text-based protocol (example: `STEER:345` or `POSIT:862`), which is then processed by the Python script listening to the serial connection on the Raspberry Pi.
